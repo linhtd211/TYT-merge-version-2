@@ -1,6 +1,0 @@
-{
-  "name": "Trạm Y Tế Merge",
-  "description": "Game puzzle vật lý thả và hợp nhất vật tư y tế phong cách Suika dễ thương và vui nhộn tại trạm y tế.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
