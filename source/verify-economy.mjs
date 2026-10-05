@@ -1,0 +1,11 @@
+import {build} from 'esbuild';import assert from 'node:assert/strict';
+await build({stdin:{contents:"export {GameStorage} from './src/game/storage';export {COSMETIC_SKINS} from './src/game/skins';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'esm',outfile:'../qa-economy.mjs'});
+const data=new Map([['tram_yte_coins','12000'],['tram_yte_unlocked_skins','["classic","cyber"]'],['tram_yte_active_skin','cyber']]);
+globalThis.localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};let changed=0;globalThis.window={dispatchEvent:()=>changed++};
+const {GameStorage,COSMETIC_SKINS}=await import('../qa-economy.mjs');
+assert.equal(GameStorage.getActiveSkin(),'cyber');assert(GameStorage.getUnlockedSkins().includes('cyber'));
+assert.deepEqual(COSMETIC_SKINS.map(s=>s.priceCoins),[0,3500,6000,9000]);
+assert.equal(GameStorage.spendCoins(13000),false);assert.equal(GameStorage.getCoins(),12000);
+assert.equal(GameStorage.spendCoins(9000),true);GameStorage.unlockSkin('royal');GameStorage.setActiveSkin('royal');assert.equal(GameStorage.getCoins(),3000);assert.equal(GameStorage.getActiveSkin(),'royal');assert.equal(changed,1);
+assert.equal(GameStorage.spendCoins(3500),false);assert.equal(GameStorage.getCoins(),3000);
+console.log('Old ownership preserved; new prices; insufficient funds; exact deduction and skin notification verified.');

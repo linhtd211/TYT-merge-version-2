@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --safe-top-fallback: 0px;
+  --safe-bottom-fallback: 0px;
+}
+
+/* Khi thêm ra màn hình chính (Standalone PWA) trên iOS/iPhone */
+@supports (-webkit-touch-callout: none) {
+  @media all and (display-mode: standalone) {
+    :root {
+      --sat: max(env(safe-area-inset-top, 0px), 54px);
+      --sab: max(env(safe-area-inset-bottom, 0px), 24px);
+      --safe-top-fallback: 54px;
+      --safe-bottom-fallback: 24px;
+    }
+  }
+}
+
+/* Lớp bổ trợ kích hoạt bởi JS khi phát hiện iPhone PWA Standalone */
+.is-standalone-ios {
+  --sat: max(env(safe-area-inset-top, 0px), 54px) !important;
+  --sab: max(env(safe-area-inset-bottom, 0px), 24px) !important;
+  --safe-top-fallback: 54px !important;
+  --safe-bottom-fallback: 24px !important;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    touch-action: none;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
