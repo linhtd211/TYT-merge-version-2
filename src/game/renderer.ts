@@ -37,8 +37,14 @@ function drawCuteFace(
   cy: number,
   size: number,
   expression: MascotExpression = 'happy',
-  time: number = 0
+  time: number = 0,
+  darkPanel: boolean = false
 ) {
+  // Mỗi cung là một nhánh riêng, tránh Canvas nối hai điểm sáng thành vệt trắng.
+  const faceArc = (x: number, y: number, radius: number, from: number, to: number, counterClockwise = false) => {
+    ctx.moveTo(x + Math.cos(from) * radius, y + Math.sin(from) * radius);
+    ctx.arc(x, y, radius, from, to, counterClockwise);
+  };
   const eyeDistance = size * 0.36;
   const eyeRadius = Math.max(2.2, size * 0.1);
   const eyeY = cy - size * 0.05;
@@ -56,8 +62,8 @@ function drawCuteFace(
 
   // 2. MẮT (EYES) - Tông than chì mềm #334155
   ctx.save();
-  ctx.fillStyle = '#334155';
-  ctx.strokeStyle = '#334155';
+  ctx.fillStyle = '#36251D';
+  ctx.strokeStyle = darkPanel ? '#F5D9B3' : '#51362A';
   ctx.lineWidth = Math.max(2.0, size * 0.075);
   ctx.lineCap = 'round';
 
@@ -79,46 +85,55 @@ function drawCuteFace(
   } else if (expression === 'merge_excited' || isBlinking) {
     // Mắt cười híp mí cong tròn ^ ^ (😆) khi hợp nhất thành công
     ctx.beginPath();
-    ctx.arc(cx - eyeDistance, eyeY + eyeRadius * 0.3, eyeRadius * 1.2, Math.PI, 0, false);
+    faceArc(cx - eyeDistance, eyeY + eyeRadius * 0.3, eyeRadius * 1.2, Math.PI, 0, false);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(cx + eyeDistance, eyeY + eyeRadius * 0.3, eyeRadius * 1.2, Math.PI, 0, false);
+    faceArc(cx + eyeDistance, eyeY + eyeRadius * 0.3, eyeRadius * 1.2, Math.PI, 0, false);
     ctx.stroke();
   } else if (expression === 'falling') {
     // Mắt tròn to ngạc nhiên (😮) khi đang rơi từ tay cô y tá
     ctx.beginPath();
-    ctx.arc(cx - eyeDistance, eyeY, eyeRadius * 1.3, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDistance, eyeY, eyeRadius * 1.3, 0, Math.PI * 2);
+    faceArc(cx - eyeDistance, eyeY, eyeRadius * 1.3, 0, Math.PI * 2);
+    faceArc(cx + eyeDistance, eyeY, eyeRadius * 1.3, 0, Math.PI * 2);
     ctx.fill();
 
     // Điểm sáng long lanh trong mắt
     ctx.fillStyle = '#FFFFFF';
     ctx.beginPath();
-    ctx.arc(cx - eyeDistance + eyeRadius * 0.4, eyeY - eyeRadius * 0.4, eyeRadius * 0.55, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDistance + eyeRadius * 0.4, eyeY - eyeRadius * 0.4, eyeRadius * 0.55, 0, Math.PI * 2);
+    faceArc(cx - eyeDistance + eyeRadius * 0.4, eyeY - eyeRadius * 0.4, eyeRadius * 0.55, 0, Math.PI * 2);
+    faceArc(cx + eyeDistance + eyeRadius * 0.4, eyeY - eyeRadius * 0.4, eyeRadius * 0.55, 0, Math.PI * 2);
     ctx.fill();
   } else {
     // Mắt bình thường anime long lanh 2 đốm sáng (🙂)
     ctx.beginPath();
-    ctx.arc(cx - eyeDistance, eyeY, eyeRadius * 1.1, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDistance, eyeY, eyeRadius * 1.1, 0, Math.PI * 2);
+    faceArc(cx - eyeDistance, eyeY, eyeRadius * 1.1, 0, Math.PI * 2);
+    faceArc(cx + eyeDistance, eyeY, eyeRadius * 1.1, 0, Math.PI * 2);
     ctx.fill();
 
     // Hai đốm sáng lấp lánh trong mắt
     ctx.fillStyle = '#FFFFFF';
     ctx.beginPath();
-    ctx.arc(cx - eyeDistance + eyeRadius * 0.35, eyeY - eyeRadius * 0.35, eyeRadius * 0.5, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDistance + eyeRadius * 0.35, eyeY - eyeRadius * 0.35, eyeRadius * 0.5, 0, Math.PI * 2);
-    ctx.arc(cx - eyeDistance - eyeRadius * 0.3, eyeY + eyeRadius * 0.3, eyeRadius * 0.25, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDistance - eyeRadius * 0.3, eyeY + eyeRadius * 0.3, eyeRadius * 0.25, 0, Math.PI * 2);
+    faceArc(cx - eyeDistance + eyeRadius * 0.35, eyeY - eyeRadius * 0.35, eyeRadius * 0.5, 0, Math.PI * 2);
+    faceArc(cx + eyeDistance + eyeRadius * 0.35, eyeY - eyeRadius * 0.35, eyeRadius * 0.5, 0, Math.PI * 2);
+    faceArc(cx - eyeDistance - eyeRadius * 0.3, eyeY + eyeRadius * 0.3, eyeRadius * 0.25, 0, Math.PI * 2);
+    faceArc(cx + eyeDistance - eyeRadius * 0.3, eyeY + eyeRadius * 0.3, eyeRadius * 0.25, 0, Math.PI * 2);
     ctx.fill();
+  }
+  if (darkPanel && !isBlinking && expression !== 'squished' && expression !== 'merge_excited') {
+    ctx.strokeStyle = '#D8B587';
+    ctx.lineWidth = Math.max(0.6, size * 0.025);
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      faceArc(cx + side * eyeDistance, eyeY, eyeRadius * (expression === 'falling' ? 1.3 : 1.1), 0, Math.PI * 2);
+      ctx.stroke();
+    }
   }
   ctx.restore();
 
   // 3. MIỆNG (MOUTH) - Tươi cười duyên dáng
   ctx.save();
-  ctx.strokeStyle = '#334155';
+  ctx.strokeStyle = darkPanel ? '#F5D9B3' : '#51362A';
   ctx.fillStyle = '#F43F5E';
   ctx.lineWidth = Math.max(1.8, size * 0.07);
   ctx.lineCap = 'round';
@@ -129,7 +144,7 @@ function drawCuteFace(
   if (expression === 'falling') {
     // Miệng tròn chữ O ngạc nhiên
     ctx.beginPath();
-    ctx.arc(cx, mouthY + size * 0.02, size * 0.11, 0, Math.PI * 2);
+    faceArc(cx, mouthY + size * 0.02, size * 0.11, 0, Math.PI * 2);
     ctx.stroke();
   } else if (expression === 'squished') {
     // Miệng lượn sóng biểu cảm nhăn mặt dễ thương
@@ -141,14 +156,14 @@ function drawCuteFace(
   } else if (expression === 'merge_excited') {
     // Miệng cười hở răng lưỡi vui sướng
     ctx.beginPath();
-    ctx.arc(cx, mouthY - size * 0.02, size * 0.16, 0, Math.PI, false);
+    faceArc(cx, mouthY - size * 0.02, size * 0.16, 0, Math.PI, false);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
   } else {
     // Miệng cười mỉm nhẹ nhàng
     ctx.beginPath();
-    ctx.arc(cx, mouthY - size * 0.06, size * 0.15, 0.2 * Math.PI, 0.8 * Math.PI, false);
+    faceArc(cx, mouthY - size * 0.06, size * 0.15, 0.2 * Math.PI, 0.8 * Math.PI, false);
     ctx.stroke();
   }
   ctx.restore();
@@ -190,21 +205,18 @@ export function drawMedicalMascot(
   const transform = ctx.getTransform();
   const sprite = getSprite(skin, level, Math.max(w, h) * Math.hypot(transform.a, transform.b));
   if (sprite) {
-    // Phủ đúng khung vật lý cũ, tránh áo choàng khiến thân nhỏ và trông nổi giữa các vật.
-    const imageW = w, imageH = h;
+    // Căn theo thân chuẩn, giữ tỷ lệ ảnh; phụ kiện mặc ngoài không bóp méo thân.
+    const body = sprite.frame.body;
+    const fit = customRadius
+      ? (customRadius * 2 * scale) / Math.max(sprite.frame.width, sprite.frame.height)
+      : Math.min(w / (sprite.frame.width * body.width), h / (sprite.frame.height * body.height));
+    const imageW = sprite.frame.width * fit, imageH = sprite.frame.height * fit;
+    const left = -(customRadius ? 0.5 : body.x) * imageW, top = -(customRadius ? 0.5 : body.y) * imageH;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(sprite.source, -imageW / 2, -imageH / 2, imageW, imageH);
+    ctx.drawImage(sprite.source, left, top, imageW, imageH);
     const face = sprite.frame.face;
-    drawCuteFace(ctx, (face.x - 0.5) * imageW, (face.y - 0.5) * imageH, imageW * face.size, expression, time);
-    // Hai màn hình bản mặc định để trống trong ảnh nguồn: giữ chỉ số y tế.
-    if (skin === 'classic' && (level === 7 || level === 8)) {
-      ctx.fillStyle = level === 7 ? '#67E8F9' : '#334155';
-      ctx.font = `bold ${imageW * 0.15}px sans-serif`;
-      ctx.textAlign = 'center';
-      if (level === 7) ctx.fillText('98', -imageW * 0.04, imageH * 0.06);
-      else { ctx.fillText('120', -imageW * 0.16, -imageH * 0.03); ctx.fillText('80', -imageW * 0.16, imageH * 0.13); }
-    }
+    drawCuteFace(ctx, left + face.x * imageW, top + face.y * imageH, imageW * face.size, expression, time, face.dark);
     ctx.restore();
     return;
   }
@@ -2044,7 +2056,8 @@ export function drawDoctorDropper(
   let time = 0;
   let scaleFactor = 1.0;
 
-  if (typeof timeOrScale === 'number' && timeOrScale > 1000) {
+  // Phân biệt chữ ký bằng số đối số, không dùng mốc thời gian: game có thể mở trước 1 giây.
+  if (arguments.length >= 8) {
     dropStartTime = dropStartTimeOrTime;
     time = timeOrScale;
     scaleFactor = scaleFactorArg || 1.0;
@@ -2063,8 +2076,12 @@ export function drawDoctorDropper(
     ctx.translate(x, y + bounce);
     const imageH = 72, imageW = imageH * nurse.naturalWidth / nurse.naturalHeight;
     ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    ctx.save();
+    const portraitScale = Math.max(.85, Math.min(1.8, 1.25 * scaleFactor));
+    ctx.translate(0, -8);ctx.scale(portraitScale, portraitScale);
     ctx.drawImage(nurse, -imageW / 2, -25, imageW, imageH);
     drawNurseFace(ctx, imageW, imageH, time, isDropping, isOverflowing, combo);
+    ctx.restore();
     if (isOverflowing) {
       ctx.fillStyle = '#38BDF8'; ctx.beginPath(); ctx.ellipse(imageW * 0.27, 5, 2, 3.5, -0.3, 0, Math.PI * 2); ctx.fill();
     }

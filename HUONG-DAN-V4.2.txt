@@ -1,0 +1,55 @@
+TRẠM Y TẾ MERGE — V4.2, GIAO DIỆN TIẾP ĐÓN
+
+Bản sao riêng của V4.1 đã sửa màn hình chơi. Thay trang chủ và giao diện trong lúc chơi theo mẫu đã thống nhất.
+Trang chủ đã sửa theo đúng tranh mẫu anh duyệt: bảng hiệu, y tá áo hồng đứng sau quầy, icon minh họa.
+Phần tranh trang chủ được giữ tỷ lệ 2:3; dữ liệu kỷ lục/xu/combo/bộ sưu tập và các vùng bấm là React.
+Trên màn hình dài hơn tỷ lệ tranh, phần giao diện căn giữa để giữ hình không bị kéo méo.
+Vật tư trên quầy là minh họa trang trí; vật trong lúc chơi vẫn theo trang phục đã chọn.
+Màn hình chơi đã sửa lại bằng các lớp tranh của mẫu: khung, bảng thông tin, ô vật tiếp theo, bộ sưu tập và icon trợ giúp.
+Các vùng bấm và số liệu là React; vật phẩm, y tá, chuyển động và biểu cảm vẫn chạy Canvas.
+Khung chơi co theo màn hình; kích thước vật tư và cấu hình va chạm giữ nguyên.
+Đã sửa lỗi hàm vẽ có thể hiểu nhầm thời gian thành tỷ lệ hình trong giây đầu khi mở game.
+
+Giữ nguyên cấu hình vật lý, kích thước/collider vật tư, luật ghép, điểm, lưu ván, nhiệm vụ,
+điểm danh, bộ trang phục, giá 0 / 3500 / 6000 / 9000, hiệu ứng âm thanh và cơ chế PWA.
+Mã lưu trữ và khóa localStorage không đổi. Giữ dữ liệu cũ khi cập nhật cùng tên miền và không xóa dữ liệu trình duyệt.
+Bản HTML test có dữ liệu riêng theo môi trường trình duyệt; không tự lấy dữ liệu từ tên miền Vercel.
+
+THỬ NGAY TRÊN MÁY TÍNH
+Mở file game-giao-dien-v4.2.html bằng Chrome/Edge. Không cần npm.
+HTML này phục vụ test; để cài PWA và kiểm tra offline sau cài, dùng bản triển khai HTTPS.
+
+ĐƯA LÊN GITHUB / VERCEL
+Giải nén ZIP. Các file package.json, package-lock.json, index.html và thư mục src, public nằm ngay gốc.
+Đưa nội dung giải nén lên gốc repo thay bản V4. Giữ cả package-lock.json đi kèm.
+Không upload node_modules. Không lồng thêm một thư mục source.
+Vercel: Framework Vite; Build npm run build; Output dist; Install npm ci hoặc mặc định npm install.
+Giữ bản V4 để có thể quay lại. Nếu PWA còn hiển thị bản cũ, đóng hoàn toàn rồi mở lại sau khi bản mới tải xong.
+
+KIỂM TRA ĐÃ THỰC HIỆN
+TypeScript và production/PWA build qua.
+Chromium: bố cục ở 320x568, 390x844, 430x932, 1440x900; không tràn ngang.
+Chạy kiểm tra điểm danh, mua Hoàng gia 9000, trang bị, bộ sưu tập, thả vật, đổi vật,
+lưu và tiếp tục ván có vật tư, cài đặt, bật/hủy gắp, khử khuẩn; không có lỗi JavaScript trong các luồng này.
+Cấu hình vật lý, luật ghép, nhiệm vụ, lưu trữ và giá giữ nguyên; thay giao diện và phần vẽ nêu trên.
+Đã mô phỏng safe area iPhone standalone và thao tác vuốt cuộn trang phục trong Chromium.
+Đã thử PWA precache: tải lại trang chủ và mở game khi trình duyệt tắt mạng.
+Chưa đo FPS hoặc kiểm tra Safari/PWA trên iPhone thật. Anh test thêm phần đó trước khi dùng chính thức.
+Đã kiểm tra thêm nút Chơi ván mới: hủy giữ lại ván cũ, xác nhận mới xóa.
+Ảnh trong kiem-tra-giao-dien là ảnh chụp bản chạy; ảnh man-choi-co-vat-tu dùng dữ liệu kiểm tra riêng.
+Không đưa ván/tiền thử vào dữ liệu mặc định.
+Đã kiểm tra nút hướng dẫn tiếp tế, bật/tắt âm thanh, mở hộp quà đủ 100/100 và lưu công cụ nhận được.
+
+BỔ SUNG V4.2
+- Nhạc trang chủ tự soạn bằng Web Audio: giai điệu chuông mềm, hợp âm và bass nhẹ.
+- Sau khi mở game, chạm màn hình một lần để trình duyệt cho phát nhạc. Lựa chọn tắt nhạc đã lưu vẫn được giữ.
+- Cài đặt > Nhạc nền để bật/tắt; công tắc hiệu ứng âm thanh riêng không tắt nhạc nền.
+- Chuyển sang chơi dùng giai điệu game đã có. Một vòng nhạc duy nhất, dừng nốt cũ khi đổi cảnh.
+- Nhạc dừng khi ẩn tab/rời ứng dụng; thử khôi phục AudioContext đã mở khi quay lại.
+- Bảng hiệu có ánh sáng lướt, sao và tim nổi nhẹ quanh y tá, nút chơi sáng theo nhịp.
+- Các vùng bấm không chuyển động; không thay luật chơi, giá, dữ liệu hay vật tư.
+- Tôn trọng chế độ giảm chuyển động của thiết bị.
+- Chromium: AudioContext thật sau thao tác, không tự mở trước thao tác, bật/tắt và lưu lựa chọn,
+  chuyển cảnh nhiều lần không chồng nhạc, mô phỏng visibility/pagehide/pageshow, thử suspend/resume context.
+- Bố cục và luồng chơi/lưu/mua trang phục đã kiểm tra lại; PWA offline không cần tải tệp nhạc.
+- Chưa kiểm tra nghe nhạc hoặc khôi phục sau khóa màn hình trên Safari/iPhone thật.

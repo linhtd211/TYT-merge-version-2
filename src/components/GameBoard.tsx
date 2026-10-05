@@ -1,3 +1,4 @@
+import frameArt from '../../public/art/play-frame.webp?url';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -505,70 +506,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
             }
           }
 
-          // 1. VẼ HẬU CẢNH PHÒNG KHÁM TRẠM Y TẾ ẤM ÁP (Xuyên qua thùng kính)
-          ctx.save();
-          // Màu tường kem vàng nhạt ấm áp
-          ctx.fillStyle = '#FDF6E2';
-          ctx.fillRect(0, 0, w, h);
-
-          // Bức tranh cổ động chữ thập đỏ "Vì sức khỏe cộng đồng" trên tường phía sau
-          const posterW = 68;
-          const posterH = 88;
-          const posterX = w - posterW - 20;
-          const posterY = 60;
-          ctx.fillStyle = '#FFFFFF';
-          ctx.strokeStyle = '#E2D3B3';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.roundRect(posterX, posterY, posterW, posterH, 6);
-          ctx.fill();
-          ctx.stroke();
-
-          // Trái tim đỏ và chữ trên poster
-          ctx.fillStyle = '#EF4444';
-          ctx.font = 'bold 16px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('♥', posterX + posterW / 2, posterY + 30);
-          ctx.fillStyle = '#64748B';
-          ctx.font = 'bold 7px sans-serif';
-          ctx.fillText('VÌ SỨC KHỎE', posterX + posterW / 2, posterY + 50);
-          ctx.fillText('CỘNG ĐỒNG', posterX + posterW / 2, posterY + 62);
-
-          // Cây xanh cảnh Monstera bên góc trái
-          ctx.fillStyle = '#10B981';
-          ctx.beginPath();
-          ctx.ellipse(24, h * 0.45, 14, 26, -0.4, 0, Math.PI * 2);
-          ctx.ellipse(36, h * 0.48, 16, 28, 0.3, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-
-          // 2. VẼ THÙNG KÍNH MICA TRONG SUỐT (Translucent Acrylic Container)
-          ctx.save();
+          // Khung tranh ở lớp DOM; tọa độ vật lý và kích thước từng vật giữ nguyên cấu hình.
           const pad = 12;
-          const boxW = w - pad * 2;
-          const boxH = h - pad - 6;
-
-          // Nền kính trong suốt phản quang nhẹ
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-          ctx.beginPath();
-          ctx.roundRect(pad, pad, boxW, boxH, [0, 0, 26, 26]);
-          ctx.fill();
-
-          // Viền thùng kính mica trắng sáng dày dặn
-          ctx.strokeStyle = isOverflowing ? 'rgba(239, 68, 68, 0.85)' : 'rgba(255, 255, 255, 0.95)';
-          ctx.lineWidth = 4;
-          ctx.stroke();
-
-          // Phản xạ ánh sáng bóng trên mặt kính (Góc trên bên trái)
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-          ctx.beginPath();
-          ctx.moveTo(pad + 8, pad + 10);
-          ctx.lineTo(pad + 28, pad + 10);
-          ctx.lineTo(pad + 12, h * 0.6);
-          ctx.lineTo(pad + 8, h * 0.6);
-          ctx.closePath();
-          ctx.fill();
-          ctx.restore();
 
           // 3. VẼ VẠCH CẢNH BÁO QUÁ TẢI (DANGER LINE CHUẨN MẪU CÓ ĐẾM NGƯỢC RÕ RÀNG)
           ctx.save();
@@ -606,7 +545,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
             ctx.font = 'bold 10px sans-serif';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-            ctx.fillText('⚠️ VẠCH CẢNH BÁO QUÁ TẢI', w - pad - 8, dangerY - 10);
+            ctx.fillText('⚠ VẠCH CẢNH BÁO', w - pad - 8, dangerY - 10);
           }
           ctx.restore();
 
@@ -615,7 +554,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
           if (canDropRef.current && !isPickMode && !isGameOver) {
             ctx.save();
             ctx.setLineDash([5, 6]);
-            ctx.strokeStyle = '#FFFFFF';
+            ctx.strokeStyle = 'rgba(240,137,137,.34)';
             ctx.lineWidth = 2.2;
             ctx.beginPath();
             ctx.moveTo(dropperX, dropperY + 22);
@@ -925,7 +864,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-between bg-gradient-to-b from-[#FDF8EC] via-[#FFF9ED] to-[#F5E6CC] overflow-hidden select-none">
+    <div className="clinic-game relative w-full h-full flex flex-col justify-between bg-gradient-to-b from-[#FDF8EC] via-[#FFF9ED] to-[#F5E6CC] overflow-hidden select-none">
       {/* 1. Header trên cùng: Cài đặt, Bảng hiệu Trạm Y Tế Merge, Điểm & Kỷ Lục, Âm thanh, Lưu ván & Nút về Home */}
       <Header
         score={score}
@@ -993,7 +932,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
       {/* 3. KHU VỰC THÙNG KÍNH MICA CHƠI CHÍNH */}
       <div
         ref={containerRef}
-        className="relative flex-1 w-full mx-auto my-0.5 cursor-crosshair touch-none overflow-hidden"
+        className="play-field relative flex-1 min-h-0 w-full mx-auto cursor-crosshair touch-none overflow-hidden"
+        style={{backgroundImage:`url(${frameArt})`,boxShadow:isOverflowing ? 'inset 0 0 0 4px #ef7777' : undefined}}
         onPointerDown={(e) => handlePointerMove(e.clientX)}
         onPointerMove={(e) => handlePointerMove(e.clientX)}
         onPointerUp={handleDrop}

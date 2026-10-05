@@ -6,7 +6,7 @@ import spaceUrl from '../../public/art/cyber.webp?url';
 import nurseUrl from '../../public/art/nurse.webp?url';
 import manifest from '../../public/art/frames.json';
 
-type Frame = {x: number; y: number; width: number; height: number; face: {x:number;y:number;size:number}};
+type Frame = {x: number; y: number; width: number; height: number; face: {x:number;y:number;size:number;dark?:boolean}; body: {x:number;y:number;width:number;height:number}};
 type Sprite = {chain: HTMLCanvasElement[]; frame: Frame};
 const sprites: Record<string, Sprite[]> = {};
 let nurse: HTMLImageElement | null = null;
@@ -27,17 +27,32 @@ function makeChain(img: HTMLImageElement, frame: Frame) {
   return chain;
 }
 const urls: Record<string,string> = {classic:classicUrl,sakura:sakuraUrl,royal:royalUrl,cyber:spaceUrl};
-export const spritesReady = Promise.all([
-  ...Object.entries(urls).map(([skin,url]) => new Promise<void>(resolve => {
+// Lỗi ảnh không giữ màn hình khởi động mãi; bộ vẽ Canvas vẫn có thể chạy.
+function loadImage(url: string, apply: (img: HTMLImageElement) => void): Promise<void> {
+  return new Promise(resolve => {
     const img = new Image();
-    img.onload = () => {
-      sprites[skin] = (manifest[skin as keyof typeof manifest] as Frame[]).map(frame => ({frame,chain:makeChain(img,frame)}));
-      resolve();
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true; clearTimeout(timer);
+      img.onload = null; img.onerror = null; resolve();
     };
-    img.onerror = () => resolve(); // Giữ bộ vẽ Canvas dự phòng nếu ảnh tải lỗi.
+    const timer = setTimeout(finish, 12000);
+    img.onload = () => {
+      try { apply(img); }
+      catch (error) { console.warn('Không chuẩn bị được ảnh; dùng bộ vẽ dự phòng.', error); }
+      finally { finish(); }
+    };
+    img.onerror = finish;
     img.src = url;
+  });
+}
+export const spritesReady = Promise.all([
+  ...Object.entries(urls).map(([skin,url]) => loadImage(url, img => {
+    const prepared = (manifest[skin as keyof typeof manifest] as Frame[]).map(frame => ({frame,chain:makeChain(img,frame)}));
+    sprites[skin] = prepared;
   })),
-  new Promise<void>(resolve => {const img=new Image();img.onload=()=>{nurse=img;resolve();};img.onerror=()=>resolve();img.src=nurseUrl;})
+  loadImage(nurseUrl, img => { nurse = img; })
 ]);
 export function getSprite(skin: string, level: number, pixels: number) {
   const sprite = sprites[skin]?.[level-1];

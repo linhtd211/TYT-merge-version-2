@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GameView } from './types/game';
 import { HomeScreen } from './components/Modals/HomeScreen';
 import { GameBoard } from './components/GameBoard';
@@ -27,6 +27,33 @@ export default function App() {
   const [sfxEnabled, setSfxEnabled] = useState<boolean>(soundManager.sfxEnabled);
   const [musicEnabled, setMusicEnabled] = useState<boolean>(soundManager.musicEnabled);
 
+  useEffect(() => {
+    soundManager.setBGMScene(currentView === 'HOME' ? 'home' : 'game');
+    // Cài đặt trong màn chơi cũng cập nhật trạng thái hiển thị khi trở về trang chủ.
+    setSfxEnabled(soundManager.sfxEnabled);
+    setMusicEnabled(soundManager.musicEnabled);
+  }, [currentView]);
+
+  useEffect(() => {
+    const unlock = () => soundManager.initContext();
+    const visible = () => soundManager.setBGMVisible(!document.hidden);
+    const hide = () => soundManager.setBGMVisible(false);
+    document.addEventListener('pointerdown', unlock, {passive:true});
+    document.addEventListener('keydown', unlock);
+    document.addEventListener('visibilitychange', visible);
+    window.addEventListener('pagehide', hide);
+    window.addEventListener('pageshow', visible);
+    visible();
+    return () => {
+      document.removeEventListener('pointerdown', unlock);
+      document.removeEventListener('keydown', unlock);
+      document.removeEventListener('visibilitychange', visible);
+      window.removeEventListener('pagehide', hide);
+      window.removeEventListener('pageshow', visible);
+      soundManager.stopBGM();
+    };
+  }, []);
+
   const refreshStorageData = () => {
     setBestScore(GameStorage.getBestScore());
     setBestCombo(GameStorage.getBestCombo());
@@ -36,7 +63,7 @@ export default function App() {
   return (
     <div className="relative w-full h-[100dvh] bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 flex items-center justify-center overflow-hidden font-sans sm:p-3 md:p-5">
       {/* Khung game: Trên mobile (iPhone) tràn viền 100% không gian; trên iPad/Tablet căn giữa với tỷ lệ chuẩn cân đối */}
-      <main className="relative w-full h-full sm:h-auto sm:max-h-[92dvh] sm:aspect-[9/15] max-w-md sm:max-w-lg md:max-w-[480px] lg:max-w-[500px] bg-white sm:rounded-3xl sm:border-4 sm:border-[#8C5824]/30 shadow-2xl overflow-hidden flex flex-col">
+      <main style={currentView === 'HOME' ? {aspectRatio: '2 / 3'} : undefined} className="relative w-full h-full sm:h-auto sm:max-h-[92dvh] sm:aspect-[9/15] max-w-md sm:max-w-lg md:max-w-[480px] lg:max-w-[500px] bg-white sm:rounded-3xl sm:border-4 sm:border-[#8C5824]/30 shadow-2xl overflow-hidden flex flex-col">
         {currentView === 'HOME' && (
           <HomeScreen
             bestScore={bestScore}

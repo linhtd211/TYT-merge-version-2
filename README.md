@@ -1,20 +1,25 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Trạm Y Tế Merge V4.2
 
-# Run and deploy your AI Studio app
+Bản V4.2 thay giao diện trang chủ và màn hình chơi theo phong cách quầy tiếp đón y tế.
+Giữ bộ vật phẩm V4, cấu hình vật lý, dữ liệu lưu, nhiệm vụ và giá trang phục.
 
-This contains everything you need to run your app locally.
+## Chạy mã nguồn
 
-View your app in AI Studio: https://ai.studio/apps/2ea68e14-1633-4c32-8bcd-df8bb7516ea1
+```sh
+npm ci
+npm run dev
+```
 
-## Run Locally
+## Kiểm tra và build
 
-**Prerequisites:**  Node.js
+```sh
+npm run lint
+npm run build
+```
 
+Vercel dùng Vite, lệnh build `npm run build`, thư mục xuất `dist`.
+Xem `HUONG-DAN-V4.2.txt` để test và cập nhật. Ảnh chụp kiểm tra nằm trong `kiem-tra-giao-dien`.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Màn hình chơi dùng lớp tranh từ mẫu duyệt, với các nút và số liệu thật. Đã sửa lỗi tỷ lệ hình khi hàm vẽ được gọi trong giây đầu khởi động.
+
+V4.2 thêm giai điệu trang chủ tự soạn bằng Web Audio và animation trang trí nhẹ. Chạm lần đầu để mở âm thanh; tắt nhạc trong Cài đặt. Nhạc dừng khi chuyển nền, đổi giai điệu theo cảnh và không tải tệp ngoài.

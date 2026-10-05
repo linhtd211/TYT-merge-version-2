@@ -1,0 +1,5 @@
+TypeScript + production build pass.
+Chromium: responsive 320x568, 390x844, 430x932, 1440x900; check-in; royal purchase/equip; collection; drop; swap; save/resume; settings; picker cancel; disinfect; no JS exceptions.
+No real-device Safari/FPS test.
+V4.2: native AudioContext, first gesture unlock, music preference persistence, one loop across scene changes, simulated document/page visibility, AudioContext suspend/resume, CSS animation and reduced-motion.
+PASS: PWA offline reload and iPhone standalone/touch-scroll simulation on V4.2. No real-device Safari audio test.

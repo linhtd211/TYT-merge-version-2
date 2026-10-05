@@ -152,6 +152,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 soundManager.initContext();
                 onToggleSfx();
               }}
+              aria-label="Bật tắt hiệu ứng âm thanh" aria-pressed={sfxEnabled}
               className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
                 sfxEnabled ? 'bg-teal-500 justify-end' : 'bg-slate-300 justify-start'
               }`}
@@ -177,6 +178,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 soundManager.initContext();
                 onToggleMusic();
               }}
+              aria-label="Bật tắt nhạc nền" aria-pressed={musicEnabled}
               className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
                 musicEnabled ? 'bg-teal-500 justify-end' : 'bg-slate-300 justify-start'
               }`}
