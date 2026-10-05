@@ -212,7 +212,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
     const width = container.clientWidth || 360;
     const height = container.clientHeight || 560;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const getRenderRatio = () => Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+    let dpr = getRenderRatio();
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     canvas.style.width = `${width}px`;
@@ -221,6 +222,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
     const ctx = canvas.getContext('2d');
     if (ctx) {
       ctx.scale(dpr, dpr);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
     }
 
     setDropperX(width / 2);
@@ -427,11 +430,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({ onGoHome, resumeSavedGame 
       if (!container || !canvas) return;
       const newW = container.clientWidth || 360;
       const newH = container.clientHeight || 560;
+      dpr = getRenderRatio();
       canvas.width = newW * dpr;
       canvas.height = newH * dpr;
       canvas.style.width = `${newW}px`;
       canvas.style.height = `${newH}px`;
-      if (ctx) ctx.scale(dpr, dpr);
+      if (ctx) {
+        ctx.scale(dpr, dpr);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+      }
       physics.resize(newW, newH);
     });
 

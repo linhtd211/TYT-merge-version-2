@@ -1,6 +1,6 @@
 BẢN THỬ TRANG PHỤC HOÀNG GIA – CẤP 1, 2, 3
 
-1. Máy tính: mở game-hoang-gia-test.html bằng Chrome/Edge để thử không cần cài npm.
+1. Máy tính: mở game-hoang-gia-v2.html bằng Chrome/Edge để thử không cần cài npm.
 2. Điện thoại: đưa NỘI DUNG thư mục web lên hosting HTTPS rồi mở link bằng Safari.
    Không dùng cửa sổ xem trước HTML trong ứng dụng Tệp để đánh giá game.
 3. Trang phục thử được bật sẵn và miễn phí. Bấm thanh vàng trên cùng để so sánh.
@@ -15,3 +15,7 @@ Tài nguyên ảnh: tạo bằng công cụ tạo ảnh từ mẫu Hoàng gia đ
 yêu cầu chung: vật y tế, nền alpha, kem–đỏ đô–vàng, không vẽ mắt/miệng/má.
 Chi tiết: viên thuốc áo choàng + vương miện; băng cá nhân hai đầu đỏ đô/vàng,
 miếng gạc kem trống giữa; băng cuộn hồng bọc nhung đỏ, panel mặt kem trống.
+
+V2: thu ảnh qua nhiều nấc; làm mượt chất lượng cao; Canvas chính vẽ 2–3x; ô NEXT theo độ phân giải màn hình và cập nhật khi đổi hình.
+Nhận biết bản mới: thanh vàng ghi ẢNH HOÀNG GIA V2.
+Link Vercel cũ chưa được cập nhật tự động: cần tải bản web mới lên hosting.

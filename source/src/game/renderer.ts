@@ -6,7 +6,7 @@
 import { MascotExpression } from '../types/game';
 import { getItemConfigByLevel } from './config';
 import { GameStorage } from './storage';
-import { getRoyalSprite, isRoyalTrialEnabled, royalFaceAnchors, royalSourceFrames } from './royalSprites';
+import { getRoyalSprite, getFilteredRoyalSprite, isRoyalTrialEnabled, royalFaceAnchors, royalSourceFrames } from './royalSprites';
 
 // ========================================================
 // BỘ VẼ MASCOT VẬT TƯ Y TẾ 2D KAWAII CHUẨN THIẾT KẾ
@@ -196,7 +196,13 @@ export function drawMedicalMascot(
       const imageH = frame.height * fit;
       const left = -imageW / 2;
       const top = -imageH / 2;
-      ctx.drawImage(sprite, frame.x, frame.y, frame.width, frame.height, left, top, imageW, imageH);
+      const transform = ctx.getTransform();
+      const pixelsPerUnit = Math.hypot(transform.a, transform.b);
+      const filtered = getFilteredRoyalSprite(level, Math.max(imageW, imageH) * pixelsPerUnit);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      if (filtered) ctx.drawImage(filtered, left, top, imageW, imageH);
+      else ctx.drawImage(sprite, frame.x, frame.y, frame.width, frame.height, left, top, imageW, imageH);
       const anchor = royalFaceAnchors[level - 1];
       drawCuteFace(ctx, left + imageW * anchor.x, top + imageH * anchor.y,
         imageW * anchor.size, expression, time);

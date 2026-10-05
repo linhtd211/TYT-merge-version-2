@@ -25,30 +25,47 @@ export const TopPanels: React.FC<TopPanelsProps> = ({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const render = () => {
+    const width = canvas.clientWidth || 52;
+    const height = canvas.clientHeight || 48;
+    const ratio = Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.clearRect(0, 0, width, height);
 
     // Vẽ bóng đổ mềm mại dưới chân vật phẩm trong ô NEXT
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
     ctx.beginPath();
-    ctx.ellipse(canvas.width / 2, canvas.height / 2 + 18, 16, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(width / 2, height / 2 + 18, 16, 5, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
     // Vẽ vật phẩm tiếp theo với tỷ lệ vừa vặn và bóng bẩy
     drawMedicalMascot(
       ctx,
-      canvas.width / 2,
-      canvas.height / 2,
+      width / 2,
+      height / 2,
       nextLevel,
       0,
       0.78,
       'happy',
       performance.now()
     );
+    };
+    render();
+    const observer = new ResizeObserver(render);
+    observer.observe(canvas);
+    window.addEventListener('royal-visual-change', render);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('royal-visual-change', render);
+    };
   }, [nextLevel]);
 
   return (

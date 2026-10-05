@@ -45,7 +45,7 @@ export default function App() {
             setRoyalTrialEnabled(next);
             setRoyalTrial(next);
           }}>
-          THỬ ẢNH HOÀNG GIA CẤP 1–3: {royalTrial ? 'BẬT' : 'TẮT'} · Chạm để so sánh
+          ẢNH HOÀNG GIA V2: {royalTrial ? 'BẬT' : 'TẮT'} · Chạm đổi hình gốc
         </button>
         <div className="relative flex-1 min-h-0 overflow-hidden">
         {currentView === 'HOME' && (
