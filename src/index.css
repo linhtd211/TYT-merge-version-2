@@ -141,7 +141,39 @@ html,body {touch-action:pan-y;overscroll-behavior:none;}
 .faithful-saved button {position:static;background:#f8d394;padding:3px 6px;font-size:2cqw;font-weight:900;color:#6c472e;white-space:nowrap;}
 .faithful-install {left:70%;top:2%;width:14%;height:4.5%;font-size:2cqw;font-weight:900;color:#754a30;background:#fff5dde8!important;border:1px solid #d1ad72!important;}
 .faithful-menu button>span {line-height:1;bottom:8%;}
-.home-clinic.home-faithful {background-image:linear-gradient(145deg,#f6e6ce,#dceddf)!important;}
+.home-clinic.home-faithful {
+  /* Lớp tranh nền toàn màn hình dành cho điện thoại dài.
+     Giao diện 2:3 vẫn nằm nguyên ở giữa nên chữ, nút và nhân vật không bị kéo méo. */
+  background-color:#f4dfc8!important;
+  background-image:
+    linear-gradient(180deg,rgba(255,239,216,.08),rgba(220,244,226,.06)),
+    url('/art/home-ambient.webp')!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+.faithful-home::before,.faithful-home::after {
+  content:"";
+  position:absolute;
+  left:0;
+  width:100%;
+  height:8cqw;
+  pointer-events:none;
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+}
+.faithful-home::before {
+  top:calc(-8cqw + 1px);
+  background-image:url('/art/home-edge-top.webp');
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000);
+  mask-image:linear-gradient(to bottom,transparent,#000);
+}
+.faithful-home::after {
+  bottom:calc(-8cqw + 1px);
+  background-image:url('/art/home-edge-bottom.webp');
+  -webkit-mask-image:linear-gradient(to top,transparent,#000);
+  mask-image:linear-gradient(to top,transparent,#000);
+}
 /* Màn hình chơi: các lớp tranh giữ nguyên nét, số liệu và vùng bấm là thành phần thật. */
 .play-header-safe {flex-shrink:0;position:relative;padding-top:max(env(safe-area-inset-top,0px),var(--sat,0px),var(--safe-top-fallback,0px));background:#f2ddc0;z-index:20;}
 .play-header {position:relative;width:100%;aspect-ratio:1024/136;background-size:100% 100%;container-type:inline-size;}
